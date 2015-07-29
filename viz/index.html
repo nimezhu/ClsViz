@@ -86,19 +86,23 @@ body.body_loading .modal {
             width: 280px;
 
         }
+	#right {
+	   float: right;
+	   width: 280px;
+	}
         #canvas {
          margin:0 300px ;  min-width: 1200px; min-height: 800px ; background-color: white; border: 1px
         }
         .panel {
             float:left;
             border: 1px #e4e4e4 solid;
-            padding: 10px;
+            padding: 20px;
             border-radius: 4px;
             box-shadow: 0 0 6px #ccc;
             background-color: #fff;
-            overflow:scroll;
-            height:500px;
-            width:500px;
+		/* overflow:scroll;*/
+            height:550px;
+            width:510px;
         }
         table {
             font-family: "Helvetica Neue", Helvetica, sans-serif
@@ -273,7 +277,8 @@ body.body_loading .modal {
     </div>
    <br>
    <br>
-
+</div>
+<div id="right">
     <h2>QUERY GENES</h2>
  <textarea id="mytextarea" rows="10" cols="37">
 </textarea>
@@ -288,8 +293,10 @@ body.body_loading .modal {
 
 </div>
 
+
 <div id="canvas">
 </div>
+
 </div>
 
     <div class="modal"></div>
