@@ -5,14 +5,11 @@
 from __future__ import print_function
 VERSION="0.6"
 import os,sys,argparse
-from bam2x import TableIO,Tools
-from bam2x import IO
 import numpy as np
 from numpy import linalg as LA
 from scipy.linalg import eigh
 import numpy as np
 import itertools
-from bam2x.Tools import gini_coefficient as gini_index
 from scipy.cluster.vq import kmeans,vq
 from numpy import exp,min,arccos,sin,trace,compress,equal,array,sqrt,isnan,power,mean,cos,median
 from scipy.spatial.distance import squareform,pdist,euclidean
@@ -54,13 +51,31 @@ def ParseArg():
         print(p.print_help(),file=sys.stderr)
         exit(0)
     return p.parse_args()
+def gini_index(iterator):
+    '''
+    Gini coefficient
+    reference:
+        http://en.wikipedia.org/wiki/Gini_coefficient
+    '''
+    l=[i for i in iterator]
+    l.sort()
+    s1=0.0
+    s2=0.0
+    y=[]
+    n=len(l)
+    for i,x in enumerate(l):
+        s1+=(i+1)*x
+        s2+=x
+    if s2==0: return 0.0
+    G=2*s1/(n*s2)-float(n+1)/n
+    return G
 def Main():
     global args,out,logger
     logger=logging.getLogger("akmeans logger")
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
     args=ParseArg()
-    out=IO.fopen(args.output,"w")
+    out=fopen(args.output,"w")
     #fname,ext=splitext(args.input)
     mlist=[]
     namelist=[]
@@ -126,7 +141,7 @@ def mat_min(slist):
     return s
 
 def read_matfile(f,header=1,col=1,name_col=0,transpose=False):  #start col 0
-    fin=IO.fopen(f,"r")
+    fin=fopen(f,"r")
     headers=[]
     mat=[]
     names=[]
@@ -343,7 +358,76 @@ def davies_bouldin_index(mu,dist):
         db+=max(array([(sqrt(dist[j])+sqrt(dist[i]))/euclidean(mu[i],mu[j]) for j in xrange(n) if j!=i]))
     db*=1.0/n
     return db
- 
+
+def open_output(output):
+    out=None
+    if output=="stdout":
+        out=sys.stdout
+    else:
+        try:
+            if os.path.isfile(output):
+                i=1;
+                newname=None
+                while(True):
+                    name,ext=os.path.splitext(output)
+                    newname=name+"("+str(i)+")"+ext
+                    if not os.path.isfile(newname):
+                        break
+                    i+=1
+                output=newname
+                logging.warn("output file exists, automatically rename the output file to "+output)
+            out=open(output,"w")
+        except IOError:
+            print("can't open file ",output,"to write. Using stdout instead",file=sys.stderr)
+            out=sys.stdout
+    return out
+
+def open_input(input):
+    fin=None
+    if input=="stdin":
+        fin=sys.stdin
+    else:
+        try:
+            x=input.split(".")
+            if x[-1]=="gz":
+                fin=gzip.open(input,"r")
+            else:
+                fin=open(input,"r")
+        except IOError:
+            print("can't read file",input,file=sys.stderr)
+            fin=sys.stdin
+    return fin
+    
+def fopen(file,mode="r",**kwargs):
+    '''
+    '''
+    if mode=="w":
+        return open_output(file)
+    if mode=="r":
+        return open_input(file)
+    return None
+def parse(handle,**dict):
+    sep="\t"
+    if dict.has_key("sep"):
+        sep=dict["sep"]
+    if isinstance(handle,str):
+        try:
+            handle=fopen(handle,"r")
+            for i in csv.reader(handle,delimiter=sep):
+                if len(i)==0:continue
+                if i[0].strip()[0]=="#": continue
+                yield tuple(i)
+            handle.close()
+        except IOError as e:
+            print("I/O error({0}): {1}".format(e.errno, e.strerror),file=sys.stderr)
+    else:
+        try:    
+            for i in csv.reader(handle,delimiter=sep):
+                if len(i)==0: continue
+                if i[0].strip()[0]=="#": continue
+                yield tuple(i)
+        except:
+            raise    
     
 if __name__=="__main__":
     Main()
