@@ -18,6 +18,7 @@ from os.path import splitext,basename
 import logging
 from sklearn.manifold import TSNE
 import random
+import csv
 #TODO
 #v5: 1.add combine tables (DONE)
 #    2.add euclidean distance (DONE)
@@ -33,7 +34,7 @@ import random
 #    8.add Report output. (google sheet readme? sheet2? Mutual information gain)
 def ParseArg():
     ''' This Function Parse the Argument '''
-    p=argparse.ArgumentParser( description = 'Example: %(prog)s -h', epilog='Library dependency : bam2x')
+    p=argparse.ArgumentParser( description = 'Example: %(prog)s -h', epilog='Library dependency : scipy scikit-learn numpy argparse csv')
     p.add_argument('-v','--version',action='version',version='%(prog)s '+VERSION)
     p.add_argument('-i','--input',dest="input",nargs="*",help="input expression matrix files")
     p.add_argument('-o','--output',dest="output",type=str,default="stdout",help="output file DEFAULT: STDOUT")
@@ -145,7 +146,7 @@ def read_matfile(f,header=1,col=1,name_col=0,transpose=False):  #start col 0
     headers=[]
     mat=[]
     names=[]
-    iter=TableIO.parse(fin)
+    iter=parse(fin)
     for i in xrange(header):
         headers.append(iter.next());
     for i in iter:
