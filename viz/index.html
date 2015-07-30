@@ -96,12 +96,12 @@ body.body_loading .modal {
         .panel {
             float:left;
             border: 1px #e4e4e4 solid;
-            padding: 20px;
+            padding: 15px;
             border-radius: 4px;
             box-shadow: 0 0 6px #ccc;
             background-color: #fff;
-		/* overflow:scroll;*/
-            height:550px;
+	    overflow:scroll;
+            height:560px;
             width:510px;
         }
         table {
@@ -143,7 +143,6 @@ body.body_loading .modal {
 <body>
 <div id="main" class="main">
 <div id="left">
-
     <h2>PANEL A CTRLS</h2>
     <table id="svg_options" class="ctrl_table">
         <tr>
@@ -270,15 +269,17 @@ body.body_loading .modal {
         <td><select id="cy" class="option_input col_input"></select></td>
     </tr>
     </table>
+	<!--
     <h2>PANEL D CTRLS</h2>
     <table id="svg3_options" class="ctrl_table">
     </table>
-     <div id="control">
-    </div>
+    -->
    <br>
    <br>
 </div>
 <div id="right">
+ <div id="control">
+    </div>
     <h2>QUERY GENES</h2>
  <textarea id="mytextarea" rows="10" cols="37">
 </textarea>
@@ -287,6 +288,7 @@ body.body_loading .modal {
    <div id="sconsole">
         <h2 id="gene_source">SOURCE
         </h2>
+   
     <div id="console"></div>
     </div>
         <div id="console2"></div>
@@ -484,7 +486,7 @@ $("#zi_value").on("change",function(d) {
     view();
 })
        var panels=[{"id":"svg","title":"scatter plot"},{"id":"svg1","title":"heatmap monitor"},{"id":"svg2","title":"contingency table plot"},{"id":"svg3","title":"barplot monitor"}];
-        var panel_divs=d3.select("#canvas").selectAll("div").data(panels).enter().append("div").attr("class","panel panel-primary")
+        var panel_divs=d3.select("#canvas").selectAll("div").data(panels).enter().append("div").attr("class","panel panel-primary").attr("id",function(d) {return d.id+"_panel"})
         panel_divs.append("div").attr("class","panel-heading").append("h2").attr("class","panel-title").text(function(d) {return d.title});
         panel_divs.append("div").property("hidden",true).attr("class","loading").append("text").text("Loading Data ...");
         panel_divs.append("div").attr("class","panel-body").selectAll("svg").data(function(d){console.log(d);return [d]}).enter().append("svg").attr("id",function(d) {return d.id}).attr("height", 500).attr("width", 500);
@@ -946,6 +948,19 @@ $("#zi_value").on("change",function(d) {
                     var samples = nameToIndex(a);
                     $("#gene_source").html("Submitted") ;
                     brushHandler(samples)
+		    if (samples.length==1) {
+				var d=window.data.table.rows[samples[0]].c
+ 				var colnames=[]
+				var row=[]
+            			var slt=$("#selected_cols").val();
+				console.log(d)
+            			slt.forEach(function(e)
+            			{
+                			colnames.push(window.data.table.cols[parseInt(e)].label)
+                			row.push(d[parseInt(e)].v)
+            			})
+                    		bar(row,"#barplot1",colnames,a);
+			}
                 })
         var nameToIndex= function(a) {
             var map = {};
@@ -973,7 +988,7 @@ $("#zi_value").on("change",function(d) {
        } 
    $("#render_ct").on("click",function(e) {render_ct_func()});
 panels.forEach(function(d) {
-d3.select("#"+d.id+"_options").append("tr").append("td").append("input").attr("class","button").attr("type","button").attr("value","download").on("click", function()
+d3.select("#"+d.id+"_panel").append("div").append("input").attr("class","button").attr("type","button").attr("value","download pdf").on("click", function()
       {
         var svg_xml= (new XMLSerializer).serializeToString(d3.select("#"+d.id)[0][0])
         var form=$('<form>',{"action":"../cgi-bin/download.py","method":"post"})
