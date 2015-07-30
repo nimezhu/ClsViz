@@ -510,6 +510,11 @@ $("#zi_value").on("change",function(d) {
             var td=[]
             var slt=$("#selected_cols").val();
             console.log(slt);
+	    if (slt==null) {
+			slt=[]
+			slt.push($("#xi").val())
+			slt.push($("#yi").val())
+		}
             var colnames=[]
             var rawdata=[]
             slt.forEach(function(e)
