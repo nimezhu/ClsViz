@@ -695,8 +695,8 @@ $("#zi_value").on("change",function(d) {
                 if ($("#zi_type").val()=="category" || $("#zi_type").val()=="value" ||$("#zi_type").val()=="logvalue")
                 {
                 window.json.modules[0].data.push({
-                    "x": x,
-                    "y": y,
+                    "x": parseFloat(x),
+                    "y": parseFloat(y),
                     "z": d.c[zi].v
                 })
                 }
