@@ -304,7 +304,7 @@ body.body_loading .modal {
     <div class="modal"></div>
 </body>
 <script>
-    (function (S,$) {
+    (function (S,$) { 
         $("#source_option").on("change",
         function(d){
             if (this.value=="input") {
@@ -389,7 +389,8 @@ body.body_loading .modal {
             $("body").addClass("body_loading")
        if($("#source_option").val()=="input")
        {
-       src= document.getElementById("source").value || document.getElementById("source").placeholder;
+    	var url = getUrlParam("q");
+       src= document.getElementById("source").value || url ||document.getElementById("source").placeholder;
        var re=/^http/;
        var OK=re.exec(src);
        if(!OK)
@@ -1165,7 +1166,10 @@ d3.select("#"+d.id+"_panel").append("div").append("input").attr("class","button"
         return b
     }
 
-    
+ function getUrlParam(name) {
+             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+        }
+
 
 
 
