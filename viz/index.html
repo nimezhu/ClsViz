@@ -229,6 +229,11 @@ body.body_loading .modal {
                 <input id="zi_value"></value>
                 </td>
                 </tr>
+	<tr>
+	<td>
+	<button onclick="view()">PLOT</button>
+	</td>
+	</tr>
     </table>
     <h2>PANEL B CTRLS</h2>
     <table id="svg1_options" class="ctrl_table">
@@ -371,7 +376,7 @@ body.body_loading .modal {
             $("#zi_type").val("category")
             }
             window.data=data;
-            window.view();
+            //window.view();
             
         }
        // S.gsheet.query("select *","1KfB5nVwLB9B095l82oBA_L7Hg7keBcUHx4pp-sU3ONg","window.handle_sheet_index");
@@ -433,6 +438,8 @@ body.body_loading .modal {
          }
        }
         getSrc();
+	var prepareview =  function() {
+	}
         var reset_zi_scale=function(d) {
             var a=[];
           
@@ -446,19 +453,19 @@ body.body_loading .modal {
             
         }
         $("#source").on("change",function(d) {getSrc();});
-        $("#xi").on("change",function(d) {view()});
-        $("#yi").on("change",function(d) {view()});
+      	$("#xi").on("change",function(d) {prepareview()});
+        $("#yi").on("change",function(d) {prepareview()});
         $("#zi").on("change",function(d) {
            
             if($("#zi_type").val()=="value") {
                 reset_zi_scale($("#zi").val())
             }
-            view()
+            prepareview()
             
         });
-        $("#xi_scale").on("change",function(d){view()});
-        $("#yi_scale").on("change",function(d){view()});
-        $("#pseudocount").on("change",function(d){view()});
+        $("#xi_scale").on("change",function(d){prepareview()});
+        $("#yi_scale").on("change",function(d){prepareview()});
+        $("#pseudocount").on("change",function(d){prepareview()});
 $("#zi_type").on("change",function(d) {console.log(d);
      if($("#zi_type").val()=="value_threshold" ) {
           $("#zi_value_cutoff").prop("disabled",false)
@@ -478,13 +485,13 @@ $("#zi_type").on("change",function(d) {console.log(d);
         
     }
     
-     view()});
+     prepareview()});
 $("#zi_value_cutoff").on("change",function(d) { 
     $("#zi_value").val($("#zi_value_cutoff").val());
-    view()})
+    prepareview()})
 $("#zi_value").on("change",function(d) {
     $("#zi_value_cutoff").val($("#zi_value").val());
-    view();
+    prepareview();
 })
        var panels=[{"id":"svg","title":"scatter plot"},{"id":"svg1","title":"heatmap monitor"},{"id":"svg2","title":"contingency table plot"},{"id":"svg3","title":"barplot monitor"}];
         var panel_divs=d3.select("#canvas").selectAll("div").data(panels).enter().append("div").attr("class","panel panel-primary").attr("id",function(d) {return d.id+"_panel"})
