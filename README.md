@@ -11,6 +11,7 @@
 - Innovated Contingency Table Visualization 
 - Support Different Input Sources: Google Sheet or URL or Local TSV file
 - Support Figure PDF Download
+- Support URL file as parameter 
 
 
 
