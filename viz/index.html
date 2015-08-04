@@ -13,6 +13,32 @@
    with position:fixed. Width, height, top and left speak
    speak for themselves. Background we set to 80% white with
    our animation centered, and no-repeating */
+.btnplot {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 12;
+  -moz-border-radius: 12;
+  border-radius: 11px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+}
+
+.btnplot:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
 .modal {
     display:    none;
     position:   fixed;
@@ -143,7 +169,7 @@ body.body_loading .modal {
 <body>
 <div id="main" class="main">
 <div id="left">
-    <h2>PANEL A CTRLS</h2>
+    <h2>SOURCE</h2>
     <table id="svg_options" class="ctrl_table">
         <tr>
             <td><b>Source</b></td>
@@ -170,6 +196,9 @@ body.body_loading .modal {
         <tr id="local_file_row" hidden>
             <td id="local_tsv_file">Local TSV File</td><td><input style="width:150px" id="file" type="file" size="10" name="file"></td>
          </tr>
+	</table>
+	<h2>PANEL A CTRLS</h2>
+	<table>
         <tr>
             <td>X axis<br>(Log)<input type="checkbox" id="xi_scale" value="log scale" unchecked> </td>
             <td>
@@ -231,7 +260,7 @@ body.body_loading .modal {
                 </tr>
 	<tr>
 	<td>
-	<button onclick="view()">PLOT</button>
+	<button class="btnplot" onclick="view()">PLOT</button>
 	</td>
 	</tr>
     </table>
@@ -265,7 +294,7 @@ body.body_loading .modal {
     <h2>PANEL C CTRLS</h2>
     <table id="svg2_options" class="ctrl_table">
     <tr>
-        <td><label>Contigency Table View</label></td><td><input type="button" name="render_ct" id="render_ct" value="Plot"/></td>
+        <td><label>Contigency Table View</label></td><td><input type="button" class="btnplot" name="render_ct" id="render_ct" value="PLOT"/></td>
     </tr>
     <tr><td><label>X Axis</label></td>
         <td><select id="cx" class="option_input col_input"></select></td>
@@ -1001,7 +1030,8 @@ $("#zi_value").on("change",function(d) {
        } 
    $("#render_ct").on("click",function(e) {render_ct_func()});
 panels.forEach(function(d) {
-d3.select("#"+d.id+"_panel").append("div").append("input").attr("class","button").attr("type","button").attr("value","download pdf").on("click", function()
+var buttons = d3.select("#"+d.id+"_panel").append("div")
+buttons.append("input").attr("class","btnplot").attr("type","button").attr("value","download pdf").on("click", function()
       {
         var svg_xml= (new XMLSerializer).serializeToString(d3.select("#"+d.id)[0][0])
         var form=$('<form>',{"action":"../cgi-bin/download.py","method":"post"})
@@ -1012,7 +1042,7 @@ d3.select("#"+d.id+"_panel").append("div").append("input").attr("class","button"
         .append($('<input>',{"name":"filename","value":"download","type":"hidden"}))
         form.submit()
       })
-     } 
+    } 
   );
 
     }(snowflake,jQuery))
