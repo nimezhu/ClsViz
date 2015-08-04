@@ -572,7 +572,13 @@ $("#zi_value").on("change",function(d) {
                 */
             })
             $("#console").html("Number: <b>"+ n.length+"</b><br>"+n.join());
-            var m = {}
+	    if(n.join().length<1800)
+	     {
+            $("#console2").html("<a href=\"http://david.abcc.ncifcrf.gov/api.jsp?type=GENE_SYMBOL&ids="+n.join()+"&&tool=chartReport&annot=GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,PIR_SUPERFAMILY,SMART,BBID,BIOCARTA,KEGG_PATHWAY,COG_ONTOLOGY,SP_PIR_KEYWORDS,UP_SEQ_FEATURE,GENETIC_ASSOCIATION_DB_DISEASE,OMIM_DISEASE\">Gene Ontology Analysis</a>");
+        } else {
+		$("#console2").html("")
+	}    
+	var m = {}
             d.forEach(function (d0) {
                 m[d0] = 1
             });
