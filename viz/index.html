@@ -198,7 +198,7 @@ body.body_loading .modal {
          </tr>
 	</table>
 	<h2>PANEL A CTRLS</h2>
-	<table>
+	<table class="ctrl_table">
         <tr>
             <td>X axis<br>(Log)<input type="checkbox" id="xi_scale" value="log scale" unchecked> </td>
             <td>
@@ -574,7 +574,7 @@ $("#zi_value").on("change",function(d) {
             $("#console").html("Number: <b>"+ n.length+"</b><br>"+n.join());
 	    if(n.join().length<1800)
 	     {
-            $("#console2").html("<a href=\"http://david.abcc.ncifcrf.gov/api.jsp?type=GENE_SYMBOL&ids="+n.join()+"&&tool=chartReport&annot=GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,PIR_SUPERFAMILY,SMART,BBID,BIOCARTA,KEGG_PATHWAY,COG_ONTOLOGY,SP_PIR_KEYWORDS,UP_SEQ_FEATURE,GENETIC_ASSOCIATION_DB_DISEASE,OMIM_DISEASE\">Gene Ontology Analysis</a>");
+            $("#console2").html("<a href=\"http://david.abcc.ncifcrf.gov/api.jsp?type=GENE_SYMBOL&ids="+n.join()+"&&tool=chartReport&annot=GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,PIR_SUPERFAMILY,SMART,BBID,BIOCARTA,KEGG_PATHWAY,COG_ONTOLOGY,SP_PIR_KEYWORDS,UP_SEQ_FEATURE,GENETIC_ASSOCIATION_DB_DISEASE,OMIM_DISEASE\" target=\"_blank\">Gene Ontology Analysis</a>");
         } else {
 		$("#console2").html("")
 	}    
