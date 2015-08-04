@@ -1225,8 +1225,8 @@ var xAxis = d3.svg.axis()
     D.scatter = new D.module({"type":"scatter"});
     D.scatter.brushCb = function() {console.log("TO IMPLEMENT")}
     D.scatter.mouseoverCb = function() {console.log("TO IMPLEMENT")}
-    D.scatter.legendMouseoverCb = function(d,i) {console.log(d,i,"TO IMPLEMENT")}
-    D.scatter.legendMouseoutCb = function(d,i) {console.log(d,i,"TO IMPLEMENT")}
+    //D.scatter.legendMouseoverCb = function(d,i) {console.log(d,i,"TO IMPLEMENT")}
+    //D.scatter.legendMouseoutCb = function(d,i) {console.log(d,i,"TO IMPLEMENT")}
     D.scatter.legendMouseClickCb = function(d,i) {console.log(d,i,"TO IMPLEMENT")}
     D.scatter.render = function() {
    var self=this;
@@ -1371,13 +1371,14 @@ var data=self.data;
   console.log(color.domain())
   console.log(z_group);
   legend.append("rect")
+      .on("mousedown",function(d,i) { console.log("inclick");self.legendMouseClickCb(z_group[gkeys[d]],d)}) //self.legendMouseClickCb(z_group[d],d)})
       .attr("x", width - 18)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color)
-      //.on("click",function(d,i) { alert(d)}) //self.legendMouseClickCb(z_group[d],d)})
-      .on("mouseover",function(d,i) {d3.select(this).attr("width",22).attr("x",width-20);self.legendMouseoverCb(z_group[gkeys[d]],d)})
-      .on("mouseout",function(d,i) {d3.select(this).attr("width",18).attr("x",width-18);self.legendMouseoutCb(z_group[gkeys[d]],d)})
+      .on("mouseover",function(d,i) {d3.select(this).attr("width",22).attr("x",width-20);})
+      .on("mouseout",function(d,i) {d3.select(this).attr("width",18).attr("x",width-18);})
+      //.on("mouseover",function(d,i) {d3.select(this).attr("width",22).attr("x",width-20);self.legendMouseoverCb(z_group[gkeys[d]],d)})
   legend.append("text")
       .attr("x", width - 24)
       .attr("y", 9)

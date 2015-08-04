@@ -633,10 +633,11 @@ $("#zi_value").on("change",function(d) {
             
             
         }
-        var legendMouseoverHandler = function (array, name) {
+        var legendMouseclickHandler = function (array, name) {
             $("#gene_source").html("Group")
             brushHandler(array)
         }
+	/*
         var legendMouseoutHandler = function (array, name) {
             var m = {}
             array.forEach(function (d) {
@@ -645,7 +646,7 @@ $("#zi_value").on("change",function(d) {
         }
         var legendClickHandler = function(array,name) {
             console.log(array);
-        }
+        }*/
 
         window.plotHandler = function () {
             //window.data = data;
@@ -675,8 +676,9 @@ $("#zi_value").on("change",function(d) {
 
                     "brushCb": iBrushHandler,
                     "mouseoverCb": mouseoverHandler,
-                    "legendMouseoverCb": legendMouseoverHandler,
-                    "legendMouseoutCb": legendMouseoutHandler
+                    //"legendMouseoverCb": legendMouseoverHandler,
+                    "legendMouseClickCb": legendMouseclickHandler,
+                    //"legendMouseoutCb": legendMouseoutHandler
                 }
 
                 ]
@@ -1139,7 +1141,7 @@ buttons.append("input").attr("class","btnplot").attr("type","button").attr("valu
                  .on("mouseover",function(d,i0){
                      bar(raw[d[0]],"#barplot1",colnames,names[d[0]]);
                 })
-                .select("title").text(function(d,i0){console.log("change",names[d[0]]);return names[d[0]]+" "+colnames[i0]+" "+raw[d[0]][i0];})
+                .select("title").text(function(d,i0){return names[d[0]]+" "+colnames[i0]+" "+raw[d[0]][i0];})
                ;
       
         g.enter().append("g")
