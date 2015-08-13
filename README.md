@@ -1,4 +1,7 @@
 # ClsViz
+
+ClsViz is designed to be a browser for table type data. It combines the advantage of various technology such as spectral clustering, model selection, neighborhood embedding and javascript interactive figure to help investigators to get a quick data impression.  
+
 ## Features
 ### Clustering
 - Spectral Clustering ( Coordinate Translate Based on Similarity Matrix)
