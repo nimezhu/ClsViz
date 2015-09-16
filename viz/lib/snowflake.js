@@ -182,8 +182,9 @@ x = d3.scale.linear()
 var data = d3.layout.histogram()
     .bins(x.ticks(this.attrs.binsize))
     (this.attrs.values);
+var ymax= this.attrs.ymax || d3.max(data,function(d){ return d.y;})
 var y = d3.scale.linear()
-    .domain([0, d3.max(data, function(d) { return d.y; })])
+    .domain([0, ymax])
     .range([height, 0]);
 
 var xAxis = d3.svg.axis()
