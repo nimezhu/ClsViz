@@ -5,7 +5,6 @@
     <title>ClsViz Data Browser</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://ajax.bam2x.net/libs/d3.box.js"></script>
     <script src="./lib/snowflake.js"></script>
 <style>
 /* Start by setting display:none to make this hidden.
@@ -168,7 +167,7 @@ body.body_loading .modal {
 </head>
 <body>
 <div id="main" class="main">
-<div id="left">
+<div id="left" >
     <h2>SOURCE</h2>
     <table id="svg_options" class="ctrl_table">
         <tr>
@@ -396,16 +395,30 @@ body.body_loading .modal {
             $("#zi").val(3)
             }
             else
+    	var url = getUrlParam("q");
             {
-             $("#xi").val(2)
-             $("#cx").val(1)
-             $("#cy").val(4)
-            $("#yi").val(3)
-            $("#zi").val(1)
-            $("#zi_type").val("category")
+             $("#xi").val(getUrlParam("xi")||2)
+             $("#cx").val(getUrlParam("cx")||1)
+             $("#cy").val(getUrlParam("cy")||4)
+            $("#yi").val(getUrlParam("yi")||3)
+            $("#zi").val(getUrlParam("zi")||1)
+            $("#zi_type").val(getUrlParam("zi_type")||"category")
+	    $("#selected_cols").val(getUrlParamList("cols1")||[])
+	    $("#selected_cols_2").val(getUrlParamList("cols2")||[])
+	    if(getUrlParam("cols2")) {
+			$("#cmp_with").prop("checked",true);
+		}
             }
             window.data=data;
-            //window.view();
+	    if(getUrlParam("fixed")) {
+	 	   window.view();
+		render_ct_func(); 
+		}
+            if(getUrlParam("fixed")==2) {
+		$("#left").prop("hidden",true)
+		}
+           
+		//window.view();
             
         }
        // S.gsheet.query("select *","1KfB5nVwLB9B095l82oBA_L7Hg7keBcUHx4pp-sU3ONg","window.handle_sheet_index");
@@ -425,7 +438,7 @@ body.body_loading .modal {
        {
     	var url = getUrlParam("q");
        src= document.getElementById("source").value || url ||document.getElementById("source").placeholder;
-       var re=/^http/;
+	var re=/^http/;
        var OK=re.exec(src);
        if(!OK)
        {
@@ -1214,6 +1227,13 @@ buttons.append("input").attr("class","btnplot").attr("type","button").attr("valu
  function getUrlParam(name) {
              return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
         }
+ function getUrlParamList(name) {
+		var a=getUrlParam(name).split(",")
+		var b=[]
+		a.forEach(function(d){b.push(parseInt(d))})
+		return b;
+        }
+
 
 
 
