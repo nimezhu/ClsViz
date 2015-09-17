@@ -213,6 +213,8 @@ def average_rank_score(x):
     return s/l
 def rank_score(x):
     s=sum(x)
+    if s==0:
+        s=1
     a=[float(j)/s for j in x]
     l=len(x)
     s1=0.0
