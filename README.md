@@ -14,8 +14,7 @@ ClsViz is designed to be a browser for table type data. It combines the advantag
 - Innovated Contingency Table Visualization 
 - Support Different Input Sources: Google Sheet or URL or Local TSV file
 - Support Figure PDF Download
-- Support URL file as parameter 
-
+- Support URL parameters 
 
 
 ## Demo Website
