@@ -1158,6 +1158,8 @@ var loadFileAsData=function()
 		window.data=data;
 		setOptionList();
 		setOptions(d.opts);
+		view();
+		render_ct_func();
 	};
 	fileReader.readAsText(fileToLoad, "UTF-8");	
 }
