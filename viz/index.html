@@ -271,7 +271,7 @@ body.body_loading .modal {
         </td>
         <td>
         <label>Selected Columns</label>
-        <select id="selected_cols" size="8" multiple="multiple" tabindex="1" class="option_input col_input">
+        <select id="cols1" size="8" multiple="multiple" tabindex="1" class="option_input col_input">
             
         </select>
         </td>
@@ -283,7 +283,7 @@ body.body_loading .modal {
         </td>
         <td>
         <label>Selected Columns</label>
-        <select id="selected_cols_2" size="8" multiple="multiple" tabindex="1" class="option_input col_input">
+        <select id="cols2" size="8" multiple="multiple" tabindex="1" class="option_input col_input">
             
         </select>
         </td>
@@ -302,6 +302,36 @@ body.body_loading .modal {
         <td><select id="cy" class="option_input col_input"></select></td>
     </tr>
     </table>
+    <h2>SESSION CTRL</h2>
+	<!--
+	OPT_NAME: <input type="text" id="sessionName" placeholder="default"></input>
+	<button id="get">get options</button>
+	-->
+	<!--
+	<button id="save">save options</button>
+	<button id="load">load options</button>
+	<div id="paras"></div>
+	-->    
+	<table>
+    
+	<tr>
+		<td>Save Session As:</td>
+		<td><input id="inputFileNameToSaveAs"></input></td>
+	</tr>
+	<tr>
+	<td></td>	<td><button id="saveBtn">Save Session</button></td>
+	</tr>
+	<tr>
+		<td>Select Session File:</td>
+		<td><input type="file" id="fileToLoad"></td>
+		
+	<tr>
+	<td></td>
+	<td><button id="loadBtn">Load Session File</button><td>
+	</tr>
+</table>
+
+
 	<!--
     <h2>PANEL D CTRLS</h2>
     <table id="svg3_options" class="ctrl_table">
@@ -379,23 +409,21 @@ body.body_loading .modal {
          window.handle_sheet_index=function(data)
         {
             
-            var s=""
             window.data=data;
-            data.table.cols.forEach(function(d,i) {
-                s+="<option value="+i+">"+d.label+"</option>";
-            })
-           
-            $(".col_input").html(s)
-            d3.selectAll(".loading").property("hidden",true);
+            setOptionList();
+		d3.selectAll(".loading").property("hidden",true);
             $("body").removeClass("body_loading")
+	   setUrlParas();
+	}
+	var setUrlParas =function() {
             $("#xi").val(getUrlParam("xi")||2)
             $("#cx").val(getUrlParam("cx")||1)
             $("#cy").val(getUrlParam("cy")||4)
             $("#yi").val(getUrlParam("yi")||3)
             $("#zi").val(getUrlParam("zi")||1)
             $("#zi_type").val(getUrlParam("zi_type")||"category")
-	    $("#selected_cols").val(getUrlParamList("cols1")||[])
-	    $("#selected_cols_2").val(getUrlParamList("cols2")||[])
+	    $("#cols1").val(getUrlParamList("cols1")||[])
+	    $("#cols2").val(getUrlParamList("cols2")||[])
 	    if(getUrlParam("cols2")) {
 			$("#cmp_with").prop("checked",true);
 		}
@@ -410,6 +438,37 @@ body.body_loading .modal {
 		//window.view();
             
         }
+	var setOptionList= function() {
+            var s=""
+	    data.table.cols.forEach(function(d,i) {
+                s+="<option value="+i+">"+d.label+"</option>";
+            })
+           
+            $(".col_input").html(s)
+	}
+	var getOptions= function()  {
+		var opts={};
+		var optList=["xi","yi","zi","zi_type","cx","cy","cols1","cols2"]
+		optList.forEach(function(d) {
+		opts[d]=$("#"+d).val()
+		})
+		//opts.cmp_with_prop_checked = $("#cmp_with").prop("checked");
+		return opts;
+	}
+	var setOptions=function(opts) {
+		Object.keys(opts).forEach(function(d){
+		$("#"+d).val(opts[d]);
+		})
+	}
+	var options={};
+	$("#save").on("click",function(d){
+	options=getOptions()
+	localStorage.ClsVizOptions=JSON.stringify(options)
+	})
+	$("#load").on("click",function(d){
+	setOptions(JSON.parse(localStorage.ClsVizOptions))	
+	})
+
        // S.gsheet.query("select *","1KfB5nVwLB9B095l82oBA_L7Hg7keBcUHx4pp-sU3ONg","window.handle_sheet_index");
        var files;
        function prepareUpload(event) {
@@ -545,7 +604,7 @@ $("#zi_value").on("change",function(d) {
             var n = [];
             var samples=[]
             var td=[]
-            var slt=$("#selected_cols").val();
+            var slt=$("#cols1").val();
 	    if (slt==null) {
 			slt=[]
 			slt.push($("#xi").val())
@@ -591,7 +650,7 @@ $("#zi_value").on("change",function(d) {
             
             if( $("#cmp_with").is(":checked")) {
             (function(d) {
-                    var slt=$("#selected_cols_2").val();
+                    var slt=$("#cols2").val();
                     var colnames2=[]
                     var rawdata2=[]
                     var n2=[]
@@ -619,7 +678,7 @@ $("#zi_value").on("change",function(d) {
         var mouseoverHandler = function (d) {
 
             var a=data.table.rows[d].c
-            var slt=$("#selected_cols").val();
+            var slt=$("#cols1").val();
             var colnames=[];
             var values=[]
             slt.forEach(function(e)
@@ -987,7 +1046,7 @@ $("#zi_value").on("change",function(d) {
 				var d=window.data.table.rows[samples[0]].c
  				var colnames=[]
 				var row=[]
-            			var slt=$("#selected_cols").val();
+            			var slt=$("#cols1").val();
             			slt.forEach(function(e)
             			{
                 			colnames.push(window.data.table.cols[parseInt(e)].label)
@@ -1035,6 +1094,52 @@ buttons.append("input").attr("class","btnplot").attr("type","button").attr("valu
       })
     } 
   );
+
+var saveDataAsFile= function()
+{
+	var dataToWrite = JSON.stringify({"opts":getOptions(),"data":data});
+	var dataFileAsBlob = new Blob([dataToWrite], {type:'text/json'});
+	var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null)
+	{
+		downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
+	}
+	else
+	{
+		downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+	}
+
+	downloadLink.click();
+}
+
+var destroyClickedElement=function(event)
+{
+	document.body.removeChild(event.target);
+}
+
+var loadFileAsData=function()
+{
+	var fileToLoad = document.getElementById("fileToLoad").files[0];
+	var fileReader = new FileReader();
+	fileReader.onload = function(fileLoadedEvent) 
+	{
+		var dataFromFileLoaded = fileLoadedEvent.target.result;
+		var d=JSON.parse(dataFromFileLoaded);
+		var data=d.data
+		window.data=data;
+		setOptionList();
+		setOptions(d.opts);
+	};
+	fileReader.readAsText(fileToLoad, "UTF-8");	
+}
+$("#saveBtn").on("click",function(e){saveDataAsFile()})
+$("#loadBtn").on("click",function(e){loadFileAsData()})
 
     }(snowflake,jQuery))
 
