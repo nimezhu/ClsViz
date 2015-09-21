@@ -411,9 +411,9 @@ body.body_loading .modal {
             
             window.data=data;
             setOptionList();
-		d3.selectAll(".loading").property("hidden",true);
+	    d3.selectAll(".loading").property("hidden",true);
             $("body").removeClass("body_loading")
-	   setUrlParas();
+	    setUrlParas();
 	}
 	var setUrlParas =function() {
             $("#xi").val(getUrlParam("xi")||2)
@@ -498,16 +498,24 @@ body.body_loading .modal {
   url:      url,
   dataType: "text",
   success: function(fdata){
-	     var xhr = new XMLHttpRequest;
-             console.log(fdata);
-	xhr.open('POST', '../cgi-bin/parse_url_tsv.py', true);
-             xhr.send({"data":fdata});
-             xhr.onreadystatechange = function() {
-                     if (xhr.readyState == 4) {
-                       var data=JSON.parse(xhr.responseText);
-                      window.handle_sheet_index(data);
-                      }
-       };
+             var x=fdata.split("\n");
+	     var cols=x[0].split("\t");
+	     var data={}
+	data["table"]={}
+	data["table"]["cols"]=[]
+	data["table"]["rows"]=[]
+	cols.forEach(function(d){data.table.cols.push({"label":d})})
+	var j=0;
+	for(var i=1;i<x.length;i++) {
+	var r=x[i].split("\t");
+	if(r.length == cols.length) {
+	data.table.rows.push({"c":[]});
+	r.forEach(function(d) {data.table.rows[j].c.push({"v":d})})
+	j+=1;
+	}
+	}
+	console.log(data);
+	handle_sheet_index(data)
 	}
 });     	
       }
@@ -541,6 +549,7 @@ body.body_loading .modal {
        }
         getSrc();
 	var prepareview =  function() {
+	handle_sheet_index(data)
 	}
         var reset_zi_scale=function(d) {
             var a=[];
