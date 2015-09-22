@@ -1332,6 +1332,7 @@ $("#getSessionURL").on("click",function(e){getOptionsURL()})
     {   var sum=0.0
         for(var i in data) {sum+=data[i]}
         var b=[]
+	if(sum==0) {sum=1.0};
         for(var i in data) {b.push(data[i]/sum)}
         return b
     }
