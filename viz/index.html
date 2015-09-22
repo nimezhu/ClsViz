@@ -329,6 +329,9 @@ body.body_loading .modal {
 	<td></td>
 	<td><button id="loadBtn">Load Session File</button><td>
 	</tr>
+	<tr>
+	<td></td>	<td><button id="getSessionURL">Get Session URL</button></td>
+	</tr>
 </table>
 
 
@@ -455,11 +458,44 @@ body.body_loading .modal {
 		//opts.cmp_with_prop_checked = $("#cmp_with").prop("checked");
 		return opts;
 	}
+	var getOptionsURL = function() {
+		var opts=getOptions()
+		var s="http://garberwiki.umassmed.edu:8000/index.html?q="+getUrlParam("q")+"&fixed=1"
+		Object.keys(opts).forEach(function(k){s+="&"+k+"="+opts[k]})
+		$("#console2").html(s)
+		return s;
+	}
 	var setOptions=function(opts) {
 		Object.keys(opts).forEach(function(d){
 		$("#"+d).val(opts[d]);
 		})
 	}
+var parseUrlTsv = function(url,callback) {
+ $.ajax({
+  	type:     "GET",
+  	url:      url,
+  	dataType: "text",
+  	success: function(fdata){
+             var x=fdata.split("\n");
+	     var cols=x[0].split("\t");
+	     var data={}
+	data["table"]={}
+	data["table"]["cols"]=[]
+	data["table"]["rows"]=[]
+	cols.forEach(function(d){data.table.cols.push({"label":d})})
+	var j=0;
+	for(var i=1;i<x.length;i++) {
+	var r=x[i].split("\t");
+	if(r.length == cols.length) {
+		data.table.rows.push({"c":[]});
+		r.forEach(function(d) {data.table.rows[j].c.push({"v":d})})
+		j+=1;
+		}
+	}
+	callback(data)
+	}
+      }); 
+}
 	var options={};
 	$("#save").on("click",function(d){
 	options=getOptions()
@@ -493,31 +529,7 @@ body.body_loading .modal {
         S.gsheet.query("select *", src, "window.handle_sheet_index")   
        }
        else {
-	$.ajax({
-  type:     "GET",
-  url:      url,
-  dataType: "text",
-  success: function(fdata){
-             var x=fdata.split("\n");
-	     var cols=x[0].split("\t");
-	     var data={}
-	data["table"]={}
-	data["table"]["cols"]=[]
-	data["table"]["rows"]=[]
-	cols.forEach(function(d){data.table.cols.push({"label":d})})
-	var j=0;
-	for(var i=1;i<x.length;i++) {
-	var r=x[i].split("\t");
-	if(r.length == cols.length) {
-	data.table.rows.push({"c":[]});
-	r.forEach(function(d) {data.table.rows[j].c.push({"v":d})})
-	j+=1;
-	}
-	}
-	console.log(data);
-	handle_sheet_index(data)
-	}
-});     	
+	parseUrlTsv(url,handle_sheet_index);    	
       }
 	}
        else if($("#source_option").val()=="results")
@@ -1165,6 +1177,7 @@ var loadFileAsData=function()
 }
 $("#saveBtn").on("click",function(e){saveDataAsFile()})
 $("#loadBtn").on("click",function(e){loadFileAsData()})
+$("#getSessionURL").on("click",function(e){getOptionsURL()})
 
     }(snowflake,jQuery))
 
