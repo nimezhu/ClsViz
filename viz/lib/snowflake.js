@@ -1519,4 +1519,108 @@ G.jsonp = function(url)
 })(snowflake.gsheet);
 
 
+/* TOOLS SECTION */
 
+(function(S) {
+S.tools={}
+var T=S.tools
+T.getUrlParam= function(name) {
+             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+        }
+ T.getUrlParamList= function(name) {
+		var a=getUrlParam(name).split(",")
+		var b=[]
+		a.forEach(function(d){b.push(parseInt(d))})
+		return b;
+        }
+T.norm= function(data)
+    {   var sum=0.0
+        for(var i in data) {sum+=data[i]}
+        var b=[]
+	if(sum==0) {sum=1.0};
+        for(var i in data) {b.push(data[i]/sum)}
+        return b
+    }
+
+T.iqr= function(k) {
+        return function(d, i) {
+            var q1 = d.quartiles[0],
+                    q3 = d.quartiles[2],
+                    iqr = (q3 - q1) * k,
+                    i = -1,
+                    j = d.length;
+            while (d[++i] < q1 - iqr);
+            while (d[--j] > q3 + iqr);
+            return [i, j];
+        };
+    }
+T.setUrlParas =function() {
+            $("#xi").val(getUrlParam("xi")||2)
+            $("#cx").val(getUrlParam("cx")||1)
+            $("#cy").val(getUrlParam("cy")||4)
+            $("#yi").val(getUrlParam("yi")||3)
+            $("#zi").val(getUrlParam("zi")||1)
+            $("#zi_type").val(getUrlParam("zi_type")||"category")
+	    $("#cols1").val(getUrlParamList("cols1")||[])
+	    $("#cols2").val(getUrlParamList("cols2")||[])
+	    if(getUrlParam("cols2")) {
+			$("#cmp_with").prop("checked",true);
+		}
+	    if(getUrlParam("fixed")) {
+	 	   window.view();
+		render_ct_func(); 
+		}
+            if(getUrlParam("fixed")==2) {
+		$("#left").prop("hidden",true)
+		$("#canvas").css("margin","0 0")
+		}
+		//window.view();
+            
+        }
+T.setOptionList= function(classname) {
+            var s=""
+	    data.table.cols.forEach(function(d,i) {
+                s+="<option value="+i+">"+d.label+"</option>";
+            })
+            $("."+classname).html(s)
+	}
+T.getOptions= function(optList)  {
+		var opts={};
+		optList.forEach(function(d) {
+		opts[d]=$("#"+d).val()
+		})
+		return opts;
+	}
+T.setOptions=function(opts) {
+		Object.keys(opts).forEach(function(d){
+		$("#"+d).val(opts[d]);
+		})
+	}
+
+T.parseUrlTsv = function(url,callback) {
+ $.ajax({
+  	type:     "GET",
+  	url:      url,
+  	dataType: "text",
+  	success: function(fdata){
+             var x=fdata.split("\n");
+	     var cols=x[0].split("\t");
+	     var data={}
+	data["table"]={}
+	data["table"]["cols"]=[]
+	data["table"]["rows"]=[]
+	cols.forEach(function(d){data.table.cols.push({"label":d})})
+	var j=0;
+	for(var i=1;i<x.length;i++) {
+	var r=x[i].split("\t");
+	if(r.length == cols.length) {
+		data.table.rows.push({"c":[]});
+		r.forEach(function(d) {data.table.rows[j].c.push({"v":d})})
+		j+=1;
+		}
+	}
+	callback(data)
+	}
+      }); 
+}
+}(snowflake))
