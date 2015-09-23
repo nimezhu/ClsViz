@@ -865,22 +865,14 @@ $("#zi_value").on("change",function(d) {
      *
      * @param data           google sheet table
      * @param el             d3.select(el)
-     * @param in data : attributes     {width,height,x,y,colA,colB,colName}
-     * @param in data : callback       return list of index. { brushHanlder e.g }
-     * example:
-     *  d3.select(el).data([]).call(contingeny_table);
+     * @param   attributes     {width,height,x,y,colA,colB,colName}
+     * @param   callback       return list of index. { brushHanlder e.g }
      */
-    var contingency_table= function(el) {
-	var attributes;
-	var callback;
-	el.attr("id",function(d) {
-		attributes=d.attributes;
-		callback=d.callback;
-		return d.id||"ct_id";
-		})
+    var contingency_table= function(el,attributes,callback) {
         var data=window.data;
         el.selectAll("g").remove();
-        var x=attributes.x || 0;
+        console.log(attributes);
+	var x=attributes.x || 0;
         var y=attributes.y || 0;
         var svg1=el.append("g").attr("transform","translate("+x+","+y+")");
         var getColToArray = function(s) {
@@ -1116,8 +1108,8 @@ $("#zi_value").on("change",function(d) {
  var render_ct_func=function() {
            var colA=$("#cx").val()
            var colB=$("#cy").val()
-           //contingency_table("#contingency_table",{"colA":colA,"colB":colB},ct_callback);
-           d3.select("#contingency_table").data([{"attributes":{"colA":colA,"colB":colB},"callback":ct_callback}]).call(contingency_table);
+           contingency_table(d3.select("#contingency_table"),{"colA":colA,"colB":colB},ct_callback);
+	//d3.select("#contingency_table").data([{"attributes":{"colA":colA,"colB":colB,"x":0,"y":0},"callback":ct_callback}]).call(contingency_table);
        } 
    $("#render_ct").on("click",function(e) {render_ct_func()});
 panels.forEach(function(d) {
