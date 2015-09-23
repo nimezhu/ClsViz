@@ -517,19 +517,24 @@ var parseUrlTsv = function(url,callback) {
     d3.selectAll(".col_input").selectAll("option").remove();
     d3.selectAll(".panel").selectAll("svg").selectAll("*").remove();
     
-            $("body").addClass("body_loading")
+      $("body").addClass("body_loading")
        if($("#source_option").val()=="input")
        {
-    	var url = getUrlParam("q");
+    var url = getUrlParam("q");
+	console.log(document.getElementById("source").value);
        src= document.getElementById("source").value || url ||document.getElementById("source").placeholder;
 	var re=/^http/;
+	if(src==url) {
+	$("#source").val(url);
+	}
+	console.log(src);
        var OK=re.exec(src);
        if(!OK)
        {
         S.gsheet.query("select *", src, "window.handle_sheet_index")   
        }
        else {
-	parseUrlTsv(url,handle_sheet_index);    	
+	parseUrlTsv(src,handle_sheet_index);    	
       }
 	}
        else if($("#source_option").val()=="results")
