@@ -397,7 +397,6 @@ body.body_loading .modal {
         )
          window.src_handle_sheet_index=function(data)
         {
-
             var s=""
             data.table.rows.forEach(function(d) {
                 s+="<option value='"+d.c[1].v+"' timen='"+d.c[2].v+"'>"+d.c[0].v+"</option>";
@@ -409,9 +408,7 @@ body.body_loading .modal {
         
         
         $("#gsheet").on("change",function(d) {getSrc()});
-         window.handle_sheet_index=function(data)
-        {
-            
+         window.handle_sheet_index=function(data) {
             window.data=data;
             setOptionList();
 	    d3.selectAll(".loading").property("hidden",true);
@@ -496,6 +493,11 @@ var parseUrlTsv = function(url,callback) {
 	}
       }); 
 }
+var parseUrlToTsvUmass = function(url,callback) {
+	d3.json("http://galaxyweb.umassmed.edu/csv-to-api/?format=json2&source="+url,function(error,data){
+            callback(data);
+        })
+}
 	var options={};
 	$("#save").on("click",function(d){
 	options=getOptions()
@@ -534,7 +536,7 @@ var parseUrlTsv = function(url,callback) {
         S.gsheet.query("select *", src, "window.handle_sheet_index")   
        }
        else {
-	parseUrlTsv(src,handle_sheet_index);    	
+	parseUrlToTsvUmass(src,handle_sheet_index);    	
       }
 	}
        else if($("#source_option").val()=="results")

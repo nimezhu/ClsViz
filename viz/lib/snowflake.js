@@ -1528,13 +1528,15 @@ T.getUrlParam= function(name) {
              return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
         }
  T.getUrlParamList= function(name) {
-		var a=getUrlParam(name).split(",")
+		var a=T.getUrlParam(name)
+		if(!a) {return []}
+		a=a.split(",")
 		var b=[]
 		a.forEach(function(d){b.push(parseInt(d))})
 		return b;
         }
-T.norm= function(data)
-    {   var sum=0.0
+T.norm= function(data){
+	var sum=0.0
         for(var i in data) {sum+=data[i]}
         var b=[]
 	if(sum==0) {sum=1.0};
@@ -1554,29 +1556,6 @@ T.iqr= function(k) {
             return [i, j];
         };
     }
-T.setUrlParas =function() {
-            $("#xi").val(getUrlParam("xi")||2)
-            $("#cx").val(getUrlParam("cx")||1)
-            $("#cy").val(getUrlParam("cy")||4)
-            $("#yi").val(getUrlParam("yi")||3)
-            $("#zi").val(getUrlParam("zi")||1)
-            $("#zi_type").val(getUrlParam("zi_type")||"category")
-	    $("#cols1").val(getUrlParamList("cols1")||[])
-	    $("#cols2").val(getUrlParamList("cols2")||[])
-	    if(getUrlParam("cols2")) {
-			$("#cmp_with").prop("checked",true);
-		}
-	    if(getUrlParam("fixed")) {
-	 	   window.view();
-		render_ct_func(); 
-		}
-            if(getUrlParam("fixed")==2) {
-		$("#left").prop("hidden",true)
-		$("#canvas").css("margin","0 0")
-		}
-		//window.view();
-            
-        }
 T.setOptionList= function(classname) {
             var s=""
 	    data.table.cols.forEach(function(d,i) {
@@ -1623,4 +1602,9 @@ T.parseUrlTsv = function(url,callback) {
 	}
       }); 
 }
+T.parseUrlToTsvUmass = function(url,callback) {
+	d3.json("http://galaxyweb.umassmed.edu/csv-to-api/?format=json2&source="+url,function(error,data){
+            callback(data);
+        })
+} 
 }(snowflake))
