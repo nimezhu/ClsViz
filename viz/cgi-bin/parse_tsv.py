@@ -20,7 +20,7 @@ def parse_simple(handle,**dict):
         sep=dict["sep"]
     if isinstance(handle,str):
         try:
-            handle=IO.fopen(handle,"r")
+            handle=open(handle,"r")
             for i in csv.reader(handle,delimiter=sep):
                 if len(i)==0:continue
                 if i[0].strip()[0]=="#": continue
