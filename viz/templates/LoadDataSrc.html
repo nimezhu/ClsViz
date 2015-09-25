@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Read Table Template</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="../lib/snowflake.js"></script>
+    <script src="../lib/angular.min.js"></script>
+    <script src="../lib/angular-ui-bootstrap-modal.js"></script>
+   <link rel="stylesheet" href="../css/bootstrap.css"> 
+</head>
+<body>
+<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl">
+<button class="btn" value="input" ng-click="open()">Load Data From...</button>
+<div modal="showModal" close="cancel()">
+<div class="modal-header">
+open data from...
+</div>
+<div class="modal-body">
+<select id="open_data">
+	<option value="0">URL or Google Sheet ID</option>
+	<option value="1">TSV File</option>
+	<option value="2">JSON File</option>
+</select>
+<div id="source0_div" class="srcdiv"> 
+<textarea id="src0" rows="5" cols="20" placeholder="http://garberwiki.umassmed.edu:8000/data/Jul2015/MDDC_Ifnb.resp.cls.tsv">
+</textarea>
+</div>
+<div id="source1_div" class="srcdiv" hidden>
+            <input style="width:150px" id="src1" type="file" size="10" name="src1"></td>
+</div>
+<div id="source2_div" class="srcdiv" hidden>
+            <input style="width:150px" id="src2" type="file" size="10" name="src2"></td>
+</div>
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-success" id="ok" ng-click="ok()">O.K.</button>
+        <button class="btn" ng-click="cancel()">Cancel</button>
+</div>
+</div>
+</div>
+</body>
+<script>
+(function (S,$) { 
+var app = angular.module("MyApp", ["ui.bootstrap.modal"]);
+app.controller("MyCtrl", function($scope) {
+  $scope.open = function() {
+    $scope.showModal = true;
+  };
+  $scope.ok = function() {
+    $scope.showModal = false;
+ 	getSrc(cb); 
+};
+  $scope.cancel = function() {
+    $scope.showModal = false;
+  };
+});
+	var cb=function(data) {
+        window.data=data;
+	console.log(data);
+	}
+        $("#open_data").on("change",
+        function(d){
+		var a=$("#open_data")[0].selectedIndex
+		$(".srcdiv").prop("hidden",true);
+		$("#source"+a+"_div").prop("hidden",false);
+            }
+        )
+var getSrc=function(callback){
+       	_googleSheetHandler=callback;
+        var src;
+       	if($("#open_data").val()=="0"){
+       	src= $("#src0").val() ||document.getElementById("src0").placeholder;
+	var re=/^http/;
+       var OK=re.exec(src);
+       if(OK){
+		S.tools.parseUrlToTsvUmass(src,callback);    	
+       }
+       else{
+        	S.gsheet.query("select *", src, "_googleSheetHandler")   
+      	   }
+       }
+       else if($("#open_data").val()=="1"){
+             var ft=$("#src1")[0].files[0]
+             var myfdata ={ "file":ft}
+             var fdata = new FormData()
+             for (var key in myfdata) {
+             fdata.append(key,myfdata[key])
+             }
+             var xhr = new XMLHttpRequest;
+             xhr.open('POST', '../cgi-bin/parse_tsv.py', true);  
+             xhr.send(fdata);
+             xhr.onreadystatechange = function() {
+                     if (xhr.readyState == 4) {
+                       var data=JSON.parse(xhr.responseText);
+                      callback(data);
+                      }
+             }
+         }
+       }
+    	var url = S.tools.getUrlParam("q");
+        if (url) {
+		$("#src0").val(url);
+		$("#open_data").val(0);
+		getSrc(cb)
+	};
+}
+(snowflake,jQuery))
+</script>
+</html>
