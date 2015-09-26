@@ -1607,4 +1607,50 @@ T.parseUrlToTsvUmass = function(url,callback) {
             callback(data);
         })
 } 
+
+
+
+
+T.saveDataAsFile= function(data,filename) {
+	var dataToWrite = JSON.stringify(data);
+	var dataFileAsBlob = new Blob([dataToWrite], {type:'text/json'});
+	var fileNameToSaveAs = filename; 
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null)
+	{
+		downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
+	}
+	else
+	{
+		downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+
+	}
+	downloadLink.click();
+}
+T.loadLocalStorage = function() {
+}
+var saveDataAsLocalStorage = function() {
+}
+
+T.destroyClickedElement=function(event)
+{
+	document.body.removeChild(event.target);
+}
+T.loadFileAsData=function(fileToLoad,callback)
+{
+	var fileReader = new FileReader();
+	fileReader.onload = function(fileLoadedEvent) 
+	{
+		var dataFromFileLoaded = fileLoadedEvent.target.result;
+		var d=JSON.parse(dataFromFileLoaded);
+		callback(d);
+	};
+	fileReader.readAsText(fileToLoad, "UTF-8");	
+
+}
 }(snowflake))
