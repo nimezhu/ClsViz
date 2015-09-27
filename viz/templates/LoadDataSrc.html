@@ -31,6 +31,7 @@ open data from...
             <input style="width:150px" id="src1" type="file" size="10" name="src1"></td>
 </div>
 <div id="source2_div" class="srcdiv" hidden>
+	JSON:
             <input style="width:150px" id="src2" type="file" size="10" name="src2"></td>
 </div>
 
@@ -99,7 +100,11 @@ var getSrc=function(callback){
                       }
              }
          }
-       }
+	else if($("#open_data").val()=="2") {
+		console.log("div2");
+		S.tools.loadFileAsData($("#src2")[0].files[0],function(d){console.log(d);callback(d)})
+	}
+	}
     	var url = S.tools.getUrlParam("q");
         if (url) {
 		$("#src0").val(url);
