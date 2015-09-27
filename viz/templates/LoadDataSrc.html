@@ -12,7 +12,7 @@
 </head>
 <body>
 <div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl">
-<button class="btn" value="input" ng-click="open()">Load Data From...</button>
+<button class="btn" id="input" value="input" ng-click="open()">Load Data From...</button>
 <div modal="showModal" close="cancel()">
 <div class="modal-header">
 open data from...
@@ -42,6 +42,9 @@ open data from...
 </div>
 </div>
 </div>
+<div class="loading" hidden>
+loading...
+</div>
 </body>
 <script>
 (function (S,$) { 
@@ -52,6 +55,7 @@ app.controller("MyCtrl", function($scope) {
   };
   $scope.ok = function() {
     $scope.showModal = false;
+	$(".loading").prop("hidden",false);
  	getSrc(cb); 
 };
   $scope.cancel = function() {
@@ -59,8 +63,14 @@ app.controller("MyCtrl", function($scope) {
   };
 });
 	var cb=function(data) {
+	$(".loading").prop("hidden",true);
+	if (data.status && data.status=="error") {
+		console.log("Failed to load");
+		console.log(data);
+	} else {
         window.data=data;
 	console.log(data);
+	}
 	}
         $("#open_data").on("change",
         function(d){
@@ -107,6 +117,7 @@ var getSrc=function(callback){
 	}
     	var url = S.tools.getUrlParam("q");
         if (url) {
+		$("#input").prop('disabled',true);
 		$("#src0").val(url);
 		$("#open_data").val(0);
 		getSrc(cb)
