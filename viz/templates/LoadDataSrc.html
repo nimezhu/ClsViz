@@ -55,7 +55,6 @@ app.controller("MyCtrl", function($scope) {
   };
   $scope.ok = function() {
     $scope.showModal = false;
-	$(".loading").prop("hidden",false);
  	getSrc(cb); 
 };
   $scope.cancel = function() {
@@ -81,6 +80,7 @@ app.controller("MyCtrl", function($scope) {
         )
 var getSrc=function(callback){
        	_googleSheetHandler=callback;
+	$(".loading").prop("hidden",false);
         var src;
        	if($("#open_data").val()=="0"){
        	src= $("#src0").val() ||document.getElementById("src0").placeholder;
