@@ -117,7 +117,7 @@ def Main():
     model=TSNE(n_components=2)
     tsneY=model.fit_transform(vectorY)
     if args.M:
-        print("gene\ttSNE_x\ttSNE_y\t"+"\t".join([basename(j0) for j0 in args.input])+"\t"+"Interagrated",file=out,end="")
+        print("gene\ttSNE_x\ttSNE_y\t"+"\t".join([basename(j0) for j0 in args.input])+"\t"+"Integrated",file=out,end="")
         for i in colnamelist:
             print("\t"+"\t".join(i),end="",file=out)
         print("",file=out)
@@ -129,7 +129,7 @@ def Main():
                 print("\t"+"\t".join(str(k) for k in m[i]),file=out,end="")
             print("",file=out)
     else:
-        print("gene\ttSNE_x\ttSNE_y\t"+"\t".join([basename(j0) for j0 in args.input])+"\t"+"Interagrated",file=out)
+        print("gene\ttSNE_x\ttSNE_y\t"+"\t".join([basename(j0) for j0 in args.input])+"\t"+"Integrated",file=out)
         for i,xs in enumerate(itertools.izip(tsneY,idxt)):
             x=xs[1]
             tx,ty=xs[0]
