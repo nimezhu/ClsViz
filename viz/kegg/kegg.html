@@ -2,8 +2,8 @@
 <html>
 <head>
 <title>viz kegg test</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="../lib/jquery.min.js"></script>
+<script src="../lib/d3.v3.min.js" charset="utf-8"></script>
 <script src="../lib/snowflake.js"></script>
 </head>
 <body>
@@ -17,7 +17,9 @@
 
 (function($,d3,S){
 var map1={};
+var map1A={};
 var map2={};
+var map2A={};
 var url=S.tools.getUrlParam("q") || "http://garberwiki.umassmed.edu:8000/data/D01_Mouse.LpsSet.cls2.tsv";
 
 
@@ -31,8 +33,12 @@ data.table.rows.forEach(function(d){
 	var genename=d.c[0].v.toUpperCase();
 	var d1=[];cols1.forEach(function(d0){d1.push(parseFloat(d.c[d0].v))})
 	var d2=[];cols2.forEach(function(d0){d2.push(parseFloat(d.c[d0].v))})
-	map1[genename]=S.tools.norm(d1)
-	map2[genename]=S.tools.norm(d2)
+	map1[genename]=[]
+	var n1=S.tools.norm(d1)
+	for(var i=0;i<d1.length;i++) {map1[genename].push({"v":d1[i],"r":n1[i]})}
+	map2[genename]=[]
+	var n2=S.tools.norm(d2)
+	for(var i=0;i<d2.length;i++) {map2[genename].push({"v":d2[i],"r":n2[i]})}
 
 })
 var keggxmls=[{"id":1,"name":"cytokine and receptors","file":"hsa04060.xml"},
@@ -48,9 +54,30 @@ d3.select("#kegg")
 	.attr("value",function(d){return d.file})
 	.append("text").text(function(d){return d.name});
 
+
+var abscolor=function(d) {
+	if(d<1) {return "aliceblue"}
+	else if(d<10) {return "green"}
+	else if(d<100) {return "black"}
+	else {return "red"}
+	}
+var abscolors=[{"d":"0-1","v":"aliceblue"},{"d":"1-10","v":"green"},{"d":"10-100","v":"black"},{"d":">100","v":"red"}]
 var render = function() {
 d3.select("#main").selectAll("*").remove();
 var svg=d3.select("#main").append("svg").attr("height",2000).attr("width",2800);
+
+var legend=svg.append("g").attr("id","legend").attr("transform","translate(15,30)")
+legend.append("g").append("text").text("stroke color");
+var colorLegend =legend.selectAll(".colorLegend").data(abscolors).enter()
+	.append("g")
+	.attr("transform",function(d,i){return "translate(30,"+(i+1)*15+")"})
+	.attr("class","colorLegend")
+	
+colorLegend.append("rect").attr("x",0).attr("y",0).attr("height",10).attr("width",16).attr("fill",function(d,i){return "white"}).attr("stroke",function(d){
+if (d.v=="white") { return "black"} else { return d.v}
+}).attr("stroke-width",1.0);
+colorLegend.append("text").attr("x",28).attr("y",10).text(function(d,i){return d.d}).attr("font-size","8px")
+	
 d3.xml($("#kegg").val(),"application/xml",function(xml){
  	var entrys=xml.documentElement.getElementsByTagName("entry");
 	rects=[];
@@ -127,7 +154,11 @@ d3.xml($("#kegg").val(),"application/xml",function(xml){
 		.attr("height",function(d,i){return 5})
 		.attr("width",function(d,i){return 10})
 		.attr("opacity",0.8)
-		.attr("fill",function(d,i){return color(d)});
+		.attr("fill",function(d,i){return color(d.r)})
+		.attr("stroke",function(d,i){return abscolor(d.v)})
+		.attr("stroke-width",1.0)
+		.append("title")
+		.text(function(d,i){return d.v});
 	rects.append("g")
 		.attr("class","value")
 		.attr("transform",function(d){return "translate("+(parseInt(d.graph.width)+5)+",7)"})
@@ -141,7 +172,11 @@ d3.xml($("#kegg").val(),"application/xml",function(xml){
 		.attr("height",function(d,i){return 5})
 		.attr("width",function(d,i){return 10})
 		.attr("opacity",0.8)
-		.attr("fill",function(d,i){return color(d)});
+		.attr("fill",function(d,i){return color(d.r)})
+		.attr("stroke",function(d,i){return abscolor(d.v)})
+		.attr("stroke-width",1.0)
+		.append("title")
+		.text(function(d,i){return d.v});
  	var arrows=xml.documentElement.getElementsByTagName("relation");
 	lines=[];
 	for(var i=0;i<entrys.length;i++) {
