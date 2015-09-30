@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="../css/bootstrap.css"> 
 </head>
 <body>
-<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="rows.length=0;cols.length=0">
+<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="loading=false;rows.length=0;cols.length=0">
 <button class="btn" id="input" value="input" ng-click="open()">Load Data From...</button>
 <button class="btn" id="output" value="output" ng-click="save()">Save Data</button>
 <div style="padding:10px">
@@ -38,7 +38,7 @@
 <div class="modal-body">
 <div ng-show="opendiv">
 open data from...
-<select ng-model="selected_src" ng-options="src.name for src in srcs">
+<select ng-model="selected_src" ng-options="src as src.name for src in srcs">
 </select>
 <div  ng-show="selected_src.value==0"> 
 <textarea id="src0" rows="5" cols="20" placeholder="http://garberwiki.umassmed.edu:8000/data/Jul2015/MDDC_Ifnb.resp.cls.tsv">
@@ -65,9 +65,10 @@ save data to json file
         <button class="btn" ng-click="cancel()">Cancel</button>
 </div>
 </div>
-</div>
-<div class="loading" ng-show="loading" hidden>
+<div ng-show="loading">
 loading...
+</div>
+
 </div>
 </body>
 <script>
@@ -75,7 +76,6 @@ loading...
 var app = angular.module("MyApp", ["ui.bootstrap.modal"]);
 var getUrlParam=S.tools.getUrlParam;
 app.controller("MyCtrl", function($scope) {
-  
   $scope.open = function() {
    $scope.opendiv=true;
   $scope.srcs=[{"name":"url","value":0},{"name":"tsv","value":1},{"name":"json","value":2}];
@@ -85,7 +85,6 @@ app.controller("MyCtrl", function($scope) {
   $scope.ok = function() {
     $scope.showModal = false;
    if($scope.opendiv) {
-	console.log("open data....");
  	getSrc(cb);
    } else {
    var filename = $("#saveToFile").val() || "download.json";
@@ -102,7 +101,7 @@ app.controller("MyCtrl", function($scope) {
   };
  	
 var cb=function(data) {
-	$(".loading").prop("hidden",true);
+	$scope.loading=false;
 	if (data.status && data.status=="error") {
 		console.log("Failed to load");
 		console.log(data);
@@ -123,21 +122,26 @@ var cb=function(data) {
 	}
 }
 
-var getSrc=function(callback){
+var processURLorGSheet=function(src,callback) {
+        $scope.loading=true;
        	_googleSheetHandler=callback;
-	$(".loading").prop("hidden",false);
-        var src;
-       	if($scope.selected_src.value==0){
-       	src= $("#src0").val() ||document.getElementById("src0").placeholder;
 	var re=/^http/;
-       var OK=re.exec(src);
-       if(OK){
+       	var OK=re.exec(src);
+       	if(OK){
 		S.tools.parseUrlToTsvUmass(src,callback);    	
-       }
-       else{
+       	}
+       	else{
         	S.gsheet.query("select *", src, "_googleSheetHandler")   
-      	   }
-       }
+      	}
+
+}
+var getSrc=function(callback){
+        $scope.loading=true;
+	var src;
+       	if($scope.selected_src.value==0){
+       		src= $("#src0").val() ||document.getElementById("src0").placeholder;
+		processURLorGSheet(src,callback);       
+	}
        else if($scope.selected_src.value==1){
              var ft=$("#src1")[0].files[0]
              var myfdata ={ "file":ft}
@@ -155,15 +159,14 @@ var getSrc=function(callback){
                       }
              }
          }
-	else if($scope.selected_src.value=="2") {
-		console.log("div2");
+	else if($scope.selected_src.value==2) {
 		S.tools.loadFileAsData($("#src2")[0].files[0],function(d){console.log(d);callback(d)})
 	}
 	}
 var url = S.tools.getUrlParam("q");
         if (url) {
 		$("#input").prop('disabled',true);
-		S.tools.parseUrlToTsvUmass(url,cb);    	
+		processURLorGSheet(url,cb);    	
 	};
 });
 }
