@@ -46,16 +46,16 @@
     left:       0;
     height:     100%;
     width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
-                url('http://sampsonresume.com/labs/pIkfp.gif') 
-                50% 50% 
+    background: rgba( 255, 255, 255, .8 )
+                url('http://sampsonresume.com/labs/pIkfp.gif')
+                50% 50%
                 no-repeat;
 }
 
 /* When the body has the loading class, we turn
    the scrollbar off with overflow:hidden */
 body.body_loading {
-    overflow: hidden;   
+    overflow: hidden;
 }
 
 /* Anytime the body has the loading class, our
@@ -209,8 +209,8 @@ body.body_loading .modal {
          </td>
         </tr>
         <tr>
-            <td>Y axis<br> 
-            (Log)<input type="checkbox" id="yi_scale" value="log scale" unchecked> 
+            <td>Y axis<br>
+            (Log)<input type="checkbox" id="yi_scale" value="log scale" unchecked>
             </td>
             <td>
         <select type="text" id="yi" class="option_input col_input">
@@ -220,7 +220,7 @@ body.body_loading .modal {
           </tr>
           <tr>
               <td>Pseudo Count</td>
-              <td><input type="number" id="pseudocount" placeholder=1></input></td>
+              <td><input type="number" id="pseudocount" placeholder=1/></td>
           </tr>
           <tr>
           <td> Color axis</td>
@@ -245,16 +245,16 @@ body.body_loading .modal {
         <tr  id="zi_value_slide">
             <td>Color axis threshold</td>
             <td>
-                <label for=cutoff>Threshold</label>
-                <input id="zi_value_cutoff" type=range min=0 max=1 value=0.01 step=0.001 id=cutoff>
+                <label for=zi_value_cutoff>Threshold</label>
+                <input id="zi_value_cutoff" type=range min=0 max=1 value=0.01 step=0.001>
                 
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
-                <input type="hidden" id="sql" style="width:250px" placeholder="select * "></input>
-                <input id="zi_value"></value>
+                <input type="hidden" id="sql" style="width:250px" placeholder="select * "/>
+                <input id="zi_value"/>
                 </td>
                 </tr>
 	<tr>
@@ -311,12 +311,12 @@ body.body_loading .modal {
 	<button id="save">save options</button>
 	<button id="load">load options</button>
 	<div id="paras"></div>
-	-->    
+	-->
 	<table>
     
 	<tr>
 		<td>Save Session As:</td>
-		<td><input id="inputFileNameToSaveAs"></input></td>
+		<td><input id="inputFileNameToSaveAs"/></td>
 	</tr>
 	<tr>
 	<td></td>	<td><button id="saveBtn">Save Session</button></td>
@@ -368,9 +368,9 @@ body.body_loading .modal {
 </div>
 
     <div class="modal"></div>
-</body>
+
 <script>
-    (function (S,$) { 
+    (function (S,$) {
         $("#source_option").on("change",
         function(d){
             if (this.value=="input") {
@@ -429,7 +429,7 @@ body.body_loading .modal {
 		}
 	    if(getUrlParam("fixed")) {
 	 	   window.view();
-		render_ct_func(); 
+		render_ct_func();
 		}
             if(getUrlParam("fixed")==2) {
 		$("#left").prop("hidden",true)
@@ -491,7 +491,7 @@ var parseUrlTsv = function(url,callback) {
 	}
 	callback(data)
 	}
-      }); 
+      });
 }
 var parseUrlToTsvUmass = function(url,callback) {
 	d3.json("http://galaxyweb.umassmed.edu/csv-to-api/?format=json2&source="+url,function(error,data){
@@ -504,7 +504,7 @@ var parseUrlToTsvUmass = function(url,callback) {
 	localStorage.ClsVizOptions=JSON.stringify(options)
 	})
 	$("#load").on("click",function(d){
-	setOptions(JSON.parse(localStorage.ClsVizOptions))	
+	setOptions(JSON.parse(localStorage.ClsVizOptions))
 	})
 
        // S.gsheet.query("select *","1KfB5nVwLB9B095l82oBA_L7Hg7keBcUHx4pp-sU3ONg","window.handle_sheet_index");
@@ -533,20 +533,20 @@ var parseUrlToTsvUmass = function(url,callback) {
        var OK=re.exec(src);
        if(!OK)
        {
-        S.gsheet.query("select *", src, "window.handle_sheet_index")   
+        S.gsheet.query("select *", src, "window.handle_sheet_index")
        }
        else {
-	parseUrlToTsvUmass(src,handle_sheet_index);    	
+	parseUrlToTsvUmass(src,handle_sheet_index);
       }
 	}
        else if($("#source_option").val()=="results")
        {
-        src=$("#gsheet").val();   
-        S.gsheet.query("select *", src, "window.handle_sheet_index")   
+        src=$("#gsheet").val();
+        S.gsheet.query("select *", src, "window.handle_sheet_index")
        }
        else if($("#source_option").val()=="local_file")
        {
-         $("body").removeClass("body_loading")  
+         $("body").removeClass("body_loading")
          $("#file").on("change",function(d) {
              var ft=$("#file")[0].files[0]
              var myfdata ={ "file":ft}
@@ -616,7 +616,7 @@ $("#zi_type").on("change",function(d) {
     }
     
      prepareview()});
-$("#zi_value_cutoff").on("change",function(d) { 
+$("#zi_value_cutoff").on("change",function(d) {
     $("#zi_value").val($("#zi_value_cutoff").val());
     prepareview()})
 $("#zi_value").on("change",function(d) {
@@ -677,7 +677,7 @@ $("#zi_value").on("change",function(d) {
             $("#console2").html("<a href=\"http://david.abcc.ncifcrf.gov/api.jsp?type=GENE_SYMBOL&ids="+n.join()+"&&tool=chartReport&annot=GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,PIR_SUPERFAMILY,SMART,BBID,BIOCARTA,KEGG_PATHWAY,COG_ONTOLOGY,SP_PIR_KEYWORDS,UP_SEQ_FEATURE,GENETIC_ASSOCIATION_DB_DISEASE,OMIM_DISEASE\" target=\"_blank\">Gene Ontology Analysis</a>");
         } else {
 		$("#console2").html("")
-	}    
+	}
 	var m = {}
             d.forEach(function (d0) {
                 m[d0] = 1
@@ -804,7 +804,7 @@ $("#zi_value").on("change",function(d) {
                 {
                     if(d.c[xi])
                     {
-                    x=d.c[xi].v 
+                    x=d.c[xi].v
                     }
                     else
                     {
@@ -1112,7 +1112,7 @@ $("#zi_value").on("change",function(d) {
            var colB=$("#cy").val()
            contingency_table(d3.select("#contingency_table"),{"colA":colA,"colB":colB},ct_callback);
 	//d3.select("#contingency_table").data([{"attributes":{"colA":colA,"colB":colB,"x":0,"y":0},"callback":ct_callback}]).call(contingency_table);
-       } 
+       }
    $("#render_ct").on("click",function(e) {render_ct_func()});
 panels.forEach(function(d) {
 var buttons = d3.select("#"+d.id+"_panel").append("div")
@@ -1127,7 +1127,7 @@ buttons.append("input").attr("class","btnplot").attr("type","button").attr("valu
         .append($('<input>',{"name":"filename","value":"download","type":"hidden"}))
         form.submit()
       })
-    } 
+    }
   );
 
 var saveDataAsFile= function()
@@ -1162,7 +1162,7 @@ var loadFileAsData=function()
 {
 	var fileToLoad = document.getElementById("fileToLoad").files[0];
 	var fileReader = new FileReader();
-	fileReader.onload = function(fileLoadedEvent) 
+	fileReader.onload = function(fileLoadedEvent)
 	{
 		var dataFromFileLoaded = fileLoadedEvent.target.result;
 		var d=JSON.parse(dataFromFileLoaded);
@@ -1173,7 +1173,7 @@ var loadFileAsData=function()
 		view();
 		render_ct_func();
 	};
-	fileReader.readAsText(fileToLoad, "UTF-8");	
+	fileReader.readAsText(fileToLoad, "UTF-8");
 }
 $("#saveBtn").on("click",function(e){saveDataAsFile()})
 $("#loadBtn").on("click",function(e){loadFileAsData()})
@@ -1351,4 +1351,5 @@ $("#getSessionURL").on("click",function(e){getOptionsURL()})
 
 
 </script>
+</body>
 </html>

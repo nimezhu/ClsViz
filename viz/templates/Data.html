@@ -8,7 +8,7 @@
     <script src="../lib/snowflake.js"></script>
     <script src="../lib/angular.min.js"></script>
     <script src="../lib/angular-ui-bootstrap-modal.js"></script>
-   <link rel="stylesheet" href="../css/bootstrap.css"> 
+   <link rel="stylesheet" href="../css/bootstrap.css">
 </head>
 <body>
 <div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="loading=false;rows.length=0;cols.length=0">
@@ -26,7 +26,7 @@
 	<div ng-repeat="opt in opts" >
 	{{opt}}: <select id="{{'opt_'+opt}}">
 			<option ng-repeat="col in cols" value="{{$index}}" class="opt">
-				{{col.label}} 
+				{{col.label}}
 			</option>
 	        </select>
 	</div>
@@ -40,22 +40,22 @@
 open data from...
 <select ng-model="selected_src" ng-options="src as src.name for src in srcs">
 </select>
-<div  ng-show="selected_src.value==0"> 
+<div  ng-show="selected_src.value==0">
 <textarea id="src0" rows="5" cols="20" placeholder="http://garberwiki.umassmed.edu:8000/data/Jul2015/MDDC_Ifnb.resp.cls.tsv">
 </textarea>
 </div>
 <div  ng-show="selected_src.value==1">
-            <input style="width:150px" id="src1" type="file" size="10" name="src1"></td>
+            <input style="width:150px" id="src1" type="file" size="10" name="src1">
 </div>
 <div  ng-show="selected_src.value==2">
 	JSON:
-            <input style="width:150px" id="src2" type="file" size="10" name="src2"></td>
+            <input style="width:150px" id="src2" type="file" size="10" name="src2">
 </div>
 </div>
 <div  ng-show="savediv">
 <div id="save_to">
 save data to json file
-<input type="text" id="saveToFile"></input>
+<input type="text" id="saveToFile"/>
 </div>
 </div>
 
@@ -70,9 +70,9 @@ loading...
 </div>
 
 </div>
-</body>
+
 <script>
-(function (S,$) { 
+(function (S,$) {
 var app = angular.module("MyApp", ["ui.bootstrap.modal"]);
 var getUrlParam=S.tools.getUrlParam;
 app.controller("MyCtrl", function($scope) {
@@ -97,7 +97,7 @@ app.controller("MyCtrl", function($scope) {
   $scope.save = function() {
    $scope.opendiv=false;
    $scope.savediv=true;
-   $scope.showModal = true;    
+   $scope.showModal = true;
   };
  	
 var cb=function(data) {
@@ -128,10 +128,10 @@ var processURLorGSheet=function(src,callback) {
 	var re=/^http/;
        	var OK=re.exec(src);
        	if(OK){
-		S.tools.parseUrlToTsvUmass(src,callback);    	
+		S.tools.parseUrlToTsvUmass(src,callback);
        	}
        	else{
-        	S.gsheet.query("select *", src, "_googleSheetHandler")   
+        	S.gsheet.query("select *", src, "_googleSheetHandler")
       	}
 
 }
@@ -140,7 +140,7 @@ var getSrc=function(callback){
 	var src;
        	if($scope.selected_src.value==0){
        		src= $("#src0").val() ||document.getElementById("src0").placeholder;
-		processURLorGSheet(src,callback);       
+		processURLorGSheet(src,callback);
 	}
        else if($scope.selected_src.value==1){
              var ft=$("#src1")[0].files[0]
@@ -150,7 +150,7 @@ var getSrc=function(callback){
              fdata.append(key,myfdata[key])
              }
              var xhr = new XMLHttpRequest;
-             xhr.open('POST', '../cgi-bin/parse_tsv.py', true);  
+             xhr.open('POST', '../cgi-bin/parse_tsv.py', true);
              xhr.send(fdata);
              xhr.onreadystatechange = function() {
                      if (xhr.readyState == 4) {
@@ -166,10 +166,11 @@ var getSrc=function(callback){
 var url = S.tools.getUrlParam("q");
         if (url) {
 		$("#input").prop('disabled',true);
-		processURLorGSheet(url,cb);    	
+		processURLorGSheet(url,cb);
 	};
 });
 }
 (snowflake,jQuery))
 </script>
+</body>
 </html>
