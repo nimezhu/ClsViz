@@ -423,9 +423,9 @@ body.body_loading .modal {
             $("#zi").val(getUrlParam("zi")||1)
             $("#zi_type").val(getUrlParam("zi_type")||"category")
 	    $("#cols1").val(getUrlParamList("cols1")||[])
-	    $("#cols2").val(getUrlParamList("cols2")||[])
 	    if(getUrlParam("cols2")) {
 			$("#cmp_with").prop("checked",true);
+	    		$("#cols2").val(getUrlParamList("cols2")||[])
 		}
 	    if(getUrlParam("fixed")) {
 	 	   window.view();
