@@ -9,6 +9,7 @@ import cgi, cgitb
 import os,sys
 import json
 import csv
+import numpy
 '''
  mininum dependency
  upload tsv file 
@@ -59,7 +60,7 @@ def Main():
 def gsheet_row(x):
     h={"c":[]}
     for i in x:
-        if isanum(i):
+        if isanum(i) and not numpy.isnan(float(i)):
             if i.isdigit():
                 h["c"].append({"v":int(i),"f":i})
             else:
