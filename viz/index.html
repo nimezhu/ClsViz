@@ -493,6 +493,9 @@ var parseUrlTsv = function(url,callback) {
 	}
       });
 }
+var parseUrlToTsvLocal = function(url,callback) {
+   d3.json("cgi-bin/url_tsv.py?url="+url,function(error,data) { callback(data)})
+}
 var parseUrlToTsvUmass = function(url,callback) {
 	d3.json("http://galaxyweb.umassmed.edu/csv-to-api/?format=json2&source="+url,function(error,data){
             callback(data);
@@ -536,7 +539,7 @@ var parseUrlToTsvUmass = function(url,callback) {
         S.gsheet.query("select *", src, "window.handle_sheet_index")
        }
        else {
-	parseUrlToTsvUmass(src,handle_sheet_index);
+	parseUrlToTsvLocal(src,handle_sheet_index);
       }
 	}
        else if($("#source_option").val()=="results")
