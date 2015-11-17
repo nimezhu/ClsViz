@@ -1653,4 +1653,11 @@ T.loadFileAsData=function(fileToLoad,callback)
 	fileReader.readAsText(fileToLoad, "UTF-8");	
 
 }
+/**
+ * need url_tsv.py 
+ */
+S.tools.parseUrlToTsvLocal = function(url,callback) {
+   d3.json("/cgi-bin/url_tsv.py?url="+url,function(error,data) { callback(data)})
+}
+
 }(snowflake))
