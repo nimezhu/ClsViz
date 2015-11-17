@@ -42,6 +42,7 @@ def Main():
     cgitb.enable()
     form = cgi.FieldStorage()
     tsv=form['file']
+    print("Access-Control-Allow-Origin: *\r")
     print("Content-type:text/javascript\r\n\r\n")
     iter=parse_simple(tsv.file)
     header=iter.next()

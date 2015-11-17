@@ -30,13 +30,14 @@ def parse_simple(handle,**dict):
                 yield tuple(i)
             handle.close()
         except IOError as e:
-            print >>sys.stderr,"I/O error({0}): {1}".format(e.errno, e.strerror)
+            print("I/O error({0}): {1}".format(e.errno, e.strerror),file=sys.stderr)
     else:
         try:    
             for i in csv.reader(handle,delimiter=sep):
                 if len(i)==0: continue
                 if i[0].strip()[0]=="#": continue
                 yield tuple(i)
+            raise StopIteration
         except:
             raise     
 def Main():
@@ -52,7 +53,6 @@ def Main():
     cols=[]
     for i,x in enumerate(header):
         cols.append({"label":x})
-        
     for i in iter:
         rows.append(gsheet_row(i))
     data={}
