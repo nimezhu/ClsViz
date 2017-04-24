@@ -1,0 +1,147 @@
+{{define "title"}}
+ClsViz Data Browser
+{{end}}
+{{define "sidebar"}}
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <ul id="list" class="sidebar-menu">
+      <li class="header">Columns</li>
+      <label style="color:white"> Table Columns </label>
+    </ul>
+  </section>
+</aside>
+{{end}}
+
+{{define "body"}}
+{{template "sidebar"}}
+<div class="content-wrapper">
+  <section id="content" class="content">
+    <div class="col-md-12">
+      <div class="box box-info" class="col-md-12">
+        Query: <input id="myinput"></input>
+      </div>
+    </div>
+  </section>
+</div>
+{{template "core" .}}
+
+{{end}}
+
+{{define "config" }}
+	[ { "x":{"t":"i","v":{{.config.scatter1.x}}},
+        "y":{"t":"i","v":{{.config.scatter1.y}}},
+        "z":{"t":"i","v":{{.config.scatter1.z}}},
+        "xScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter1.xscale}}},
+        "yScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter1.yscale}}},
+        "zScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter1.zscale}}}
+      },{ "x":{"t":"i","v":{{.config.scatter2.x}}},
+        "y":{"t":"i","v":{{.config.scatter2.y}}},
+        "z":{"t":"i","v":{{.config.scatter2.z}}},
+        "xScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter2.xscale}}},
+        "yScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter2.yscale}}},
+        "zScaleType":{"t":"s","o":["linear","log","category"],"v":{{.config.scatter2.zscale}}}
+      },
+      {"col":{"t":"i","v":0}},
+      {"cols":{"v":{{.config.barplot.cols}},"t":"index"}},
+      {"cols":{"v":{{.config.heatmap.cols}},"t":"index"}}
+    ]
+{{end}}
+
+{{define "panelLayouts"}}
+	[
+      {"layout":{{.config.scatter1.layout}},"class":["box-default","box-solid"],"title":"Scatter Plot","panel":panels[0]},
+      {"layout":{{.config.scatter2.layout}},"class":["box-info"],"title":"Scatter Plot","panel":panels[1]},
+      {"layout":{{.config.barplot.layout}},"class":["box-warning"],"title":"Barplot Monitor","panel":panels[3]},
+      {"layout":{{.config.heatmap.layout}},"class":["box-success"],"title":"HeatMap Monitor","panel":panels[4]},
+	  {"layout":{{.config.genelist.layout}},"class":["box-success"],"title":"Gene List","panel":panels[2]},
+    ]
+{{end}}
+
+{{define "core"}}
+<script>
+(function(S,d3){
+  S.tsv("{{.URL}}",function(d){
+    /* init global var */
+    var input = document.getElementById("myinput");
+    var map = {}
+    var a = new Awesomplete(input, {
+      list: d.table.rows.map(function(e,i){
+        map[e.c[0].v] = i
+        return e.c[0].v
+      })
+    });
+    var table = d
+
+    /* List Columns */
+    var chartList = S.chart.labels().data(d)
+    d3.select("#list").call(chartList) //TODO FIX #list
+    chartList.ul().attr("class","treeview").attr("style","color:white")
+
+    /*********************/
+    var configs = {{template "config" .}}
+    var dispatch = d3.dispatch("many","one")
+
+    /** TODO MV TO DISPATCH　**/
+    var core = function(d) {
+      dispatch.call("one",this,d)
+    }
+
+    var callback = function(d) {
+      if (d.code == "region") {
+        dispatch.call("many",this,d.data)
+      }
+      if (d.code == "mouseover") {
+        dispatch.call("one",this,d.data)
+      }
+    }
+
+    dispatch.on("many",function(d){
+      charts[2].rows(d)
+      d3.select(Fig[0][2]).selectAll(".box-body").call(panels[2].update)
+      charts[0].process(d)
+      charts[1].process(d)
+      charts[4].rows(d)
+      .height(d.length*charts[4].rowHeight())
+      .width(charts[4].cols().length*charts[4].colWidth())
+      panels[4].ViewPane().call(charts[4])
+    })
+    dispatch.on("one",function(d){
+      charts[3].load(table,d,cols,0) //TODO CONFIG FOR SIMPLE MONITOR
+      panels[3].ViewPane().call(charts[3])
+    })
+
+
+    var charts = [
+      S.chart.scatter().data(d).send(callback),
+      S.chart.scatter().data(d).send(callback),
+      S.chart.list().data(d).send(core),
+      S.chart.barplot().width(500).height(200).barwidth(10),
+      S.chart.heatmap().data(d).cols(cols).send(core),
+    ]
+
+    /* fix without cols function , need to be improved in panels */
+    var cols = []
+    charts[3].cols = function(d){
+      cols = d;
+    }
+
+    var panels = [
+      S.panel.general().chart(charts[0]).config(configs[0]).initView(true),
+      S.panel.general().chart(charts[1]).config(configs[1]).initView(true),
+      S.panel.box().chart(charts[2]).config(configs[2]),
+      S.panel.general().chart(charts[3]).config(configs[3]),
+      S.panel.general().chart(charts[4]).config(configs[4]),
+    ]
+    var layouts = {{template "panelLayouts" .}}
+    var fig = S.fig()
+    var Fig = d3.select("#content").selectAll(".ice").data(layouts)
+    Fig.enter().append("div").attr("class","ice")
+    Fig.exit().remove()
+    Fig.call(fig)
+    window.addEventListener("awesomplete-selectcomplete", function(e){
+       dispatch.call("one",this,map[input.value])
+    }, false)
+  })
+}(snow,d3))
+</script>
+{{end}}
