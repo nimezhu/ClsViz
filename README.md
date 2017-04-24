@@ -10,14 +10,13 @@ ClsViz is designed to be a browser for table type data. It combines the advantag
 - tSNE for Visualizaiton
 
 ### Visualization
-
 #### Install from Go get
 go get -u github.com/nimezhu/ClsViz/viz
 
 viz demo.cls.tsv
 
-#### Download from Binary
-[Download Binary](http://genome.compbio.cs.cmu.edu/~xiaopenz/clsviz/viz/)
+#### Download Binary 
+[Download Binary Link](http://genome.compbio.cs.cmu.edu/~xiaopenz/clsviz/viz/)
 
 #### Obsoleted Python version
 [Python Version](https://github.com/nimezhu/ClsViz/tree/Python)
