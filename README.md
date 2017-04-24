@@ -10,15 +10,17 @@ ClsViz is designed to be a browser for table type data. It combines the advantag
 - tSNE for Visualizaiton
 
 ### Visualization
-- JavaScript Interactive Figure powered by d3js  
-- Innovated Contingency Table Visualization 
-- Support Different Input Sources: Google Sheet or URL or Local TSV file
-- Support Figure PDF Download
-- Support URL parameters 
 
+#### Install from Go get
+go get -u github.com/nimezhu/ClsViz/viz
 
-## Demo Website
-- [Visit Demo Website](http://garberwiki.umassmed.edu:8000)
+viz demo.cls.tsv
+
+#### Download from Binary
+[Download Binary](http://genome.compbio.cs.cmu.edu/~xiaopenz/clsviz/viz/)
+
+#### Obsoleted Python version
+[Python Version](https://github.com/nimezhu/ClsViz/tree/Python)
 
 ## Dependency
 ### Clustering Program Dependency
@@ -28,7 +30,3 @@ ClsViz is designed to be a browser for table type data. It combines the advantag
 - argparse
 - csv
 
-### Visualization Program Dependency
-- d3js
-- jQuery
-- librsvg ( for convert svg to pdf )
