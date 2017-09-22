@@ -80,7 +80,7 @@ func main() {
 	}
 	defer a.Close()
 	a.HandleSignals()
-	a.On(astilectron.EventNameAppStop, func(e astilectron.Event) (deleteListener bool) {
+	a.On(astilectron.EventNameAppClose, func(e astilectron.Event) (deleteListener bool) {
 		a.Stop()
 		return
 	})
